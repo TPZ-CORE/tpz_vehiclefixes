@@ -15,6 +15,6 @@
 
 > I appreciate the hard work of the following developers, I have simply created a resource to support the framework and get them easier than searching if they have not knowledge.
 
-- The original wagon fix implementation is directly from kaddarem-tebex/RedM-FixWagon
+- The original wagon fix implementation is directly from [kaddarem-tebex/RedM-FixWagon](https://github.com/Jump-On-Studios/RedM-FixWagon)
 
 - The original boats fix implementation credit to Apollyon and KTOS on the Cfx Discord.
