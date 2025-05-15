@@ -7,6 +7,6 @@ description 'TPZ-CORE - Vehicle Fixes, a script with various bug fixes for vehic
 version '1.0.0'
 
 shared_script { 'config.lua' }
-client_script { 'client/wagons.lua' }
-server_script { 'server/boats.lua' }
+client_script { 'client/*.lua' }
+server_script { 'server/*.lua' }
 
