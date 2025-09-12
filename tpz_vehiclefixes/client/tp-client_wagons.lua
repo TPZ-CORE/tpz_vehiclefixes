@@ -32,10 +32,7 @@ if Config.ActiveWagons then
     Citizen.CreateThread(function()
 
         local time = 1000
-
-        local vehiclePool = {}
-        local wagon, driver, horse = 0, 0, 0
-
+        
         while true do
 
             local vehiclePool = GetGamePool('CVehicle') or {}
