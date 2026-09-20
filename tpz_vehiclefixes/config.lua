@@ -1,7 +1,7 @@
 Config = {
 
     DevMode = {
-        active = true -- Shows Debug Prints in Client Console
+        active = false -- Shows Debug Prints in Client Console
     },
     -----------------------------------------------------
 
