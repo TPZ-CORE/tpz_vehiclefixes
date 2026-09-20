@@ -1,5 +1,3 @@
----@type BCCVehicleFixesDebugLib
-local DBG = BCCVehicleFixesDebug
 
 -- Access config values with fallback defaults for safety
 local wagonConfig = Config.Wagons or {}
@@ -25,7 +23,7 @@ local function RequestAndDeleteEntity(entity, entityName)
     end
 
     if attempts >= (networkControl.maxAttempts or 50) then
-        DBG.Warning('Failed to gain control of ' .. entityName)
+        print('Failed to gain control of ' .. entityName)
         return false
     end
 
@@ -55,7 +53,7 @@ local function RemoveWagonHorses(wagon)
         local horse = Citizen.InvokeNative(0xA8BA0BAE0173457B, wagon, i) -- GetPedInDraftHarness
         if DoesEntityExist(horse) and horse ~= 0 then
             if RequestAndDeleteEntity(horse, 'harness horse ' .. i) then
-                DBG.Success('Deleted harness horse ' .. i)
+                print('Deleted harness horse ' .. i)
                 horsesRemoved = horsesRemoved + 1
             end
         end
@@ -84,24 +82,24 @@ local function RemoveWagonObjects(wagon, wagonPos)
                 -- Check if directly attached
                 if IsEntityAttachedToEntity(obj, wagon) then
                     if RequestAndDeleteEntity(obj, 'attached object') then
-                        DBG.Success('Deleted attached object (model: ' .. objModel .. ')')
+                        print('Deleted attached object (model: ' .. objModel .. ')')
                         removed = true
                     end
                 -- Check if it's a known component within range
                 elseif distance <= (distances.knownComponent or 3.0) and IsKnownWagonComponent(objModel) then
                     if RequestAndDeleteEntity(obj, 'known wagon component') then
-                        DBG.Success('Deleted known wagon component (hash: ' .. objModel .. ')')
+                        print('Deleted known wagon component (hash: ' .. objModel .. ')')
                         removed = true
                     else
-                        DBG.Warning('Failed to delete known wagon component (hash: ' .. objModel .. ')')
+                        print('Failed to delete known wagon component (hash: ' .. objModel .. ')')
                     end
                 -- Check for very close objects (potential components)
                 elseif distance <= (distances.proximityComponent or 2.0) then
                     if RequestAndDeleteEntity(obj, 'potential wagon component') then
-                        DBG.Success('Deleted potential wagon component (model hash: ' .. objModel .. ')')
+                        print('Deleted potential wagon component (model hash: ' .. objModel .. ')')
                         removed = true
                     else
-                        DBG.Warning('Failed to delete potential wagon component (model hash: ' .. objModel .. ')')
+                        print('Failed to delete potential wagon component (model hash: ' .. objModel .. ')')
                     end
                 end
 
@@ -132,7 +130,7 @@ local function RemoveWagonPeds(wagon, wagonPos)
                 local pedInVehicle = GetVehiclePedIsIn(ped, false)
                 if pedInVehicle == wagon or IsEntityAttachedToEntity(ped, wagon) then
                     if RequestAndDeleteEntity(ped, 'wagon occupant') then
-                        DBG.Success('Deleted wagon occupant')
+                        print('Deleted wagon occupant')
                         pedsRemoved = pedsRemoved + 1
                     end
                 end
@@ -160,7 +158,7 @@ local function RemoveWagonComponents(wagon)
     -- Remove peds (passengers, guards, etc.)
     totalRemoved = totalRemoved + RemoveWagonPeds(wagon, wagonPos)
 
-    DBG.Info('Removed ' .. totalRemoved .. ' wagon components')
+    print('Removed ' .. totalRemoved .. ' wagon components')
 end
 
 ---Check if a wagon should be considered for removal
@@ -223,7 +221,7 @@ end
 ---Process and remove a stuck wagon and all its components
 ---@param wagon number The wagon entity to process
 local function ProcessStuckWagon(wagon)
-    DBG.Info('Found stuck wagon, beginning removal process...')
+    print('Found stuck wagon, beginning removal process...')
 
     -- Remove all wagon components
     RemoveWagonComponents(wagon)
@@ -232,9 +230,9 @@ local function ProcessStuckWagon(wagon)
     local driver = Citizen.InvokeNative(0x2963B5C1637E8A27, wagon) -- GetDriverOfVehicle
     if DoesEntityExist(driver) then
         if RequestAndDeleteEntity(driver, 'wagon driver') then
-            DBG.Success('Deleted wagon driver')
+            print('Deleted wagon driver')
         else
-            DBG.Warning('Failed to delete wagon driver')
+            print('Failed to delete wagon driver')
         end
     end
 
@@ -243,9 +241,9 @@ local function ProcessStuckWagon(wagon)
 
     -- Delete the wagon
     if RequestAndDeleteEntity(wagon, 'stuck wagon') then
-        DBG.Success('Successfully deleted stuck wagon and all components')
+        print('Successfully deleted stuck wagon and all components')
     else
-        DBG.Warning('Failed to delete wagon, but components were removed')
+        print('Failed to delete wagon, but components were removed')
     end
 end
 
@@ -281,10 +279,10 @@ local function RemoveOrphanedWagonComponents()
                 -- If not attached to any wagon, it's orphaned - remove it
                 if not isAttachedToWagon then
                     if RequestAndDeleteEntity(obj, 'orphaned wagon component') then
-                        DBG.Success('Deleted orphaned wagon component (hash: ' .. objModel .. ')')
+                        print('Deleted orphaned wagon component (hash: ' .. objModel .. ')')
                         orphansRemoved = orphansRemoved + 1
                     else
-                        DBG.Warning('Failed to delete orphaned wagon component (hash: ' .. objModel .. ')')
+                        print('Failed to delete orphaned wagon component (hash: ' .. objModel .. ')')
                     end
                 end
             end
@@ -292,7 +290,7 @@ local function RemoveOrphanedWagonComponents()
     end
 
     if orphansRemoved > 0 then
-        DBG.Info('Removed ' .. orphansRemoved .. ' orphaned wagon components')
+        print('Removed ' .. orphansRemoved .. ' orphaned wagon components')
     end
 
     return orphansRemoved
