@@ -4,7 +4,7 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 
 author 'Nosmakos'
 description 'TPZ-CORE - Vehicle Fixes, a script with various bug fixes for vehicles.'
-version '1.0.1'
+version '1.0.2'
 
 shared_script { 'config.lua' }
 client_script { 'client/*.lua' }
